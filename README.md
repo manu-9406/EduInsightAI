@@ -1,16 +1,35 @@
+
 # EduInsight AI
 
-## Overview
+AI-powered educational intelligence and student risk monitoring platform.
 
-EduInsight AI is an AI-powered educational intelligence system designed to analyze student engagement, identify at-risk learners, and generate personalized learning recommendations.
+---
+
+## Live Demo
+
+https://eduinsightai.streamlit.app
 
 ---
 
 ## Features
 
-- Realistic educational dataset generation
 - Student engagement analytics
-- Risk detection engine
-- Personalized recommendation system
-- Interactive Streamlit dashboard
-- Intelligent educational metrics
+- Risk prediction
+- Personalized recommendations
+- Interactive dashboard
+- AI-powered insights
+
+
+## Technologies Used
+
+- Python
+- Streamlit
+- Plotly
+- Pandas
+- Scikit-learn
+
+## Run Locally
+
+pip install -r requirements.txt
+streamlit run app.py
+
