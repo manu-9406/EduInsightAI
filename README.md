@@ -3,13 +3,12 @@
 
 AI-powered educational intelligence and student risk monitoring platform.
 
----
+
 
 ## Live Demo
 
-https://eduinsightai.streamlit.app
+https://eduinsightaiml.streamlit.app/
 
----
 
 ## Features
 
