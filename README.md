@@ -14,3 +14,6 @@ EduInsight AI is an AI-powered educational intelligence system designed to analy
 - Personalized recommendation system
 - Interactive Streamlit dashboard
 - Intelligent educational metrics
+- # EduInsight AI
+- ## Live Application
+-  https://eduinsightai.streamlit.app
