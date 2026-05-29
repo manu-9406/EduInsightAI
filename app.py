@@ -23,24 +23,48 @@ st.markdown(
     """
     <style>
 
-    .main {
-        background-color: #0E1117;
+    /* MAIN BACKGROUND */
+    .stApp {
+        background: linear-gradient(
+            to right,
+            #0f172a,
+            #111827,
+            #1e293b
+        );
         color: white;
     }
 
-    .stMetric {
-        background-color: #1E1E1E;
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid #333333;
-    }
-
+    /* SIDEBAR */
     section[data-testid="stSidebar"] {
-        background-color: #111827;
+        background: #020617;
     }
 
+    /* HEADINGS */
     h1, h2, h3, h4 {
         color: white;
+    }
+
+    /* METRIC CARDS */
+    div[data-testid="metric-container"] {
+        background: linear-gradient(
+            135deg,
+            #1e293b,
+            #334155
+        );
+        border: 1px solid #475569;
+        padding: 18px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.4);
+    }
+
+    /* DATAFRAME */
+    .stDataFrame {
+        border-radius: 10px;
+    }
+
+    /* ALERTS */
+    .stAlert {
+        border-radius: 12px;
     }
 
     </style>
@@ -64,7 +88,7 @@ def load_data():
     return df
 
 
-# DATAFRAME
+# DATA
 df = load_data()
 
 
@@ -72,7 +96,7 @@ df = load_data()
 st.sidebar.title("🎓 EduInsight AI")
 
 st.sidebar.markdown(
-    "AI-Powered Educational Intelligence Platform"
+    "### AI Educational Intelligence Platform"
 )
 
 menu = st.sidebar.radio(
@@ -86,14 +110,12 @@ menu = st.sidebar.radio(
 )
 
 
-# COURSE FILTER
+# FILTER
 selected_course = st.sidebar.selectbox(
     "Select Course",
     ["All Courses"] + list(df["course"].unique())
 )
 
-
-# FILTER DATA
 if selected_course != "All Courses":
 
     df = df[df["course"] == selected_course]
@@ -105,10 +127,9 @@ if menu == "Dashboard":
     st.title("📊 AI Educational Analytics Dashboard")
 
     st.markdown(
-        "Real-time student engagement and risk intelligence system"
+        "### Real-time learning behavior and risk intelligence system"
     )
 
-    # KPI CARDS
     total_students = len(df)
 
     active_students = len(
@@ -124,6 +145,7 @@ if menu == "Dashboard":
         2
     )
 
+    # KPI CARDS
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric(
@@ -137,22 +159,22 @@ if menu == "Dashboard":
     )
 
     col3.metric(
-        "⚠ High Risk Students",
+        "⚠ High Risk",
         high_risk_students
     )
 
     col4.metric(
-        "📈 Average Quiz Score",
+        "📈 Avg Score",
         avg_score
     )
 
     st.markdown("---")
 
-    # ALERT SECTION
+    # RISK ALERT
     if high_risk_students > 0:
 
         st.error(
-            f"⚠ ALERT: {high_risk_students} students are at HIGH academic risk"
+            f"⚠ {high_risk_students} students are at HIGH academic risk"
         )
 
     # CHARTS
@@ -160,13 +182,22 @@ if menu == "Dashboard":
 
     with col5:
 
-        st.subheader("Risk Distribution")
-
         risk_chart = px.pie(
             df,
             names="risk_level",
-            hole=0.4,
-            title="Student Risk Categories"
+            hole=0.45,
+            color="risk_level",
+            color_discrete_map={
+                "High Risk": "#ef4444",
+                "Medium Risk": "#facc15",
+                "Low Risk": "#22c55e"
+            },
+            title="Risk Distribution"
+        )
+
+        risk_chart.update_layout(
+            paper_bgcolor="#111827",
+            font_color="white"
         )
 
         st.plotly_chart(
@@ -176,13 +207,17 @@ if menu == "Dashboard":
 
     with col6:
 
-        st.subheader("Course Completion Distribution")
-
         completion_chart = px.histogram(
             df,
             x="course_completion",
             nbins=20,
+            color_discrete_sequence=["#3b82f6"],
             title="Course Completion"
+        )
+
+        completion_chart.update_layout(
+            paper_bgcolor="#111827",
+            font_color="white"
         )
 
         st.plotly_chart(
@@ -192,17 +227,29 @@ if menu == "Dashboard":
 
     st.markdown("---")
 
-    # ENGAGEMENT VS PERFORMANCE
-    st.subheader("📈 Engagement vs Quiz Performance")
-
+    # PERFORMANCE SCATTER
     scatter_chart = px.scatter(
         df,
         x="engagement_score",
         y="avg_quiz_score",
-        color="risk_level",
+        color="avg_quiz_score",
         size="study_hours_weekly",
-        hover_data=["student_id", "name", "course"],
-        title="Student Engagement Analytics"
+        hover_data=[
+            "student_id",
+            "name",
+            "course"
+        ],
+        color_continuous_scale=[
+            "#ef4444",
+            "#facc15",
+            "#22c55e"
+        ],
+        title="Engagement vs Academic Performance"
+    )
+
+    scatter_chart.update_layout(
+        paper_bgcolor="#111827",
+        font_color="white"
     )
 
     st.plotly_chart(
@@ -210,7 +257,7 @@ if menu == "Dashboard":
         use_container_width=True
     )
 
-    # TOP PERFORMERS
+    # TOP STUDENTS
     st.subheader("🏆 Top Performing Students")
 
     top_students = df.sort_values(
@@ -240,28 +287,34 @@ elif menu == "Student Insights":
 
             row = student_data.iloc[0]
 
-            st.subheader(f"Student Profile: {row['name']}")
+            st.subheader(
+                f"Student Profile: {row['name']}"
+            )
 
             col1, col2, col3 = st.columns(3)
 
             col1.metric(
                 "Quiz Score",
-                row['avg_quiz_score']
+                row["avg_quiz_score"]
             )
 
             col2.metric(
                 "Attendance",
-                row['attendance_rate']
+                row["attendance_rate"]
             )
 
             col3.metric(
                 "Risk Level",
-                row['risk_level']
+                row["risk_level"]
             )
 
-            st.progress(int(row['course_completion']))
+            st.markdown("### Course Completion")
 
-            st.info(row['recommendation'])
+            st.progress(
+                int(row["course_completion"])
+            )
+
+            st.info(row["recommendation"])
 
             st.dataframe(student_data)
 
@@ -302,7 +355,7 @@ elif menu == "Risk Center":
     for _, row in high_risk.head(10).iterrows():
 
         st.warning(
-            f"{row['student_id']} - {row['name']} has poor attendance and low academic performance"
+            f"{row['student_id']} - {row['name']} is showing low engagement and performance"
         )
 
 
@@ -325,7 +378,7 @@ elif menu == "Recommendations":
 
     for _, row in recommendation_df.head(15).iterrows():
 
-        st.info(
+        st.success(
             f"{row['student_id']} | {row['name']} → {row['recommendation']}"
         )
 
@@ -334,5 +387,6 @@ elif menu == "Recommendations":
 st.markdown("---")
 
 st.markdown(
-    "### EduInsight AI — Educational Intelligence & Risk Analytics Platform"
+    "## EduInsight AI — Educational Intelligence & Risk Analytics Platform"
 )
+
